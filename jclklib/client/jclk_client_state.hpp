@@ -31,6 +31,8 @@ namespace JClkLibClient {
         bool     servo_locked;
         bool     gm_changed;
         bool     composite_event;
+        int64_t  offset;
+        uint64_t timestamp;
     };
 
     struct jcl_state_event_count {

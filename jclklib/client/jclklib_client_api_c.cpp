@@ -53,6 +53,8 @@ bool jcl_c_subscribe(jcl_c_client_ptr client_ptr,
     current_state->servo_locked = state.servo_locked;
     current_state->gm_changed = state.gm_changed;
     current_state->composite_event = state.composite_event;
+    current_state->offset = state.offset;
+    current_state->timestamp = state.timestamp;
 
     std::copy(std::begin(state.gm_identity), std::end(state.gm_identity),
               std::begin(current_state->gm_identity));
@@ -68,7 +70,7 @@ int jcl_c_status_wait(jcl_c_client_ptr client_ptr, int timeout,
     int ret;
 
     ret = static_cast<JClkLibClient::JClkLibClientApi*>(client_ptr)->jcl_status_wait(timeout, state, eventCount);
-    if (ret <= 0)
+    if (ret < 0)
         return ret;
 
     current_state->as_capable = state.as_capable;
@@ -76,6 +78,8 @@ int jcl_c_status_wait(jcl_c_client_ptr client_ptr, int timeout,
     current_state->servo_locked = state.servo_locked;
     current_state->gm_changed = state.gm_changed;
     current_state->composite_event = state.composite_event;
+    current_state->offset = state.offset;
+    current_state->timestamp = state.timestamp;
 
     std::copy(std::begin(state.gm_identity), std::end(state.gm_identity),
               std::begin(current_state->gm_identity));

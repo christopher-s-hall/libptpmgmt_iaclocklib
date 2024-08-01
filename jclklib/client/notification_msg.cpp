@@ -196,11 +196,18 @@ PROCESS_MESSAGE_TYPE(ClientNotificationMessage::processMessage)
         if (composite_eventSub[0] && (old_composite_event != composite_client_ptp_data->composite_event))
             client_ptp_data->composite_event_count.fetch_add(1, std::memory_order_relaxed);
 
+        if (clock_gettime(CLOCK_REALTIME, &last_notification_time) == -1)
+            PrintDebug("ClientNotificationMessage::processMessage clock_gettime failed.\n");
+
         jclCurrentState.as_capable = client_ptp_data->as_capable;
         jclCurrentState.offset_in_range = client_ptp_data->master_offset_in_range;
         jclCurrentState.servo_locked = client_ptp_data->servo_locked;
         jclCurrentState.composite_event = composite_client_ptp_data->composite_event;
         memcpy(jclCurrentState.gm_identity, client_ptp_data->gm_identity, sizeof(client_ptp_data->gm_identity));
+	jclCurrentState.offset = client_ptp_data->master_offset;
+	jclCurrentState.timestamp  = last_notification_time.tv_sec*NSEC_PER_SEC;
+	jclCurrentState.timestamp *= NSEC_PER_SEC;
+	jclCurrentState.timestamp += last_notification_time.tv_nsec;
 
         jclCurrentEventCount.offset_in_range_event_count = client_ptp_data->offset_in_range_event_count;
         jclCurrentEventCount.as_capable_event_count = client_ptp_data->as_capable_event_count;
